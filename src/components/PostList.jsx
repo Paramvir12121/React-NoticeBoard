@@ -5,30 +5,21 @@ import { useState } from "react";
 import Modal from "./Modal";
 
 function Postlist({ isPosting, onStopPosting }) {
-  const [enteredBody, setEnteredBody] = useState("");
-  const [enteredAuthor, setEnteredAuthor] = useState("");
-
-  function bodyChangeHandler(event) {
-    setEnteredBody(event.target.value);
-  }
-  function authorChangeHandler(event) {
-    setEnteredAuthor(event.target.value);
+  const [posts, setPosts] = useState([]);
+  function addPostHandler(postData) {
+    setPosts((existingPosts) => [postData, ...existingPosts]);
   }
   return (
     <>
       {isPosting && (
         <Modal onClose={onStopPosting}>
-          <NewPost
-            onBodyChange={bodyChangeHandler}
-            onAuthorChange={authorChangeHandler}
-          />
+          <NewPost onCancel={onStopPosting} onAddPost={addPostHandler} />
         </Modal>
       )}
       <ul className={classes.posts}>
-        <Post author={enteredAuthor} body={enteredBody} />
-        <Post author="Reme" body="no power here bro" />
-        <Post author="Reed" body="Medium Power, no voltage" />
-        <Post author="Frank" body="Low Power, low voltage" />
+        {posts.map((post) => (
+          <Post author={post.author} body={post.body} />
+        ))}
       </ul>
     </>
   );
